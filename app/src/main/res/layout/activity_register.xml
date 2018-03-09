@@ -11,6 +11,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="saveButtonPressed"
+            android:text="SAVE"
+            tools:layout_editor_absoluteX="190dp"
+            tools:layout_editor_absoluteY="333dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -198,4 +207,5 @@
         </LinearLayout>
 
     </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
