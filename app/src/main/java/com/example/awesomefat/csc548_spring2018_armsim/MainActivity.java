@@ -4,12 +4,18 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
 {
     private EditText inputET;
+    private ViewGroup codeList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -17,9 +23,24 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.inputET = (EditText)this.findViewById(R.id.inputET);
+        this.codeList = (ViewGroup)this.findViewById(R.id.codeList);
+
+        //empty codelist of the placeholder values
+        this.codeList.removeAllViews();
 
         CORE.initializeRegisters();
         CORE.initializeRam();
+    }
+
+    public void addCodeButtonPressed(View v)
+    {
+        if(this.inputET.getText().toString().length() > 0)
+        {
+            TextView tv = new TextView(this);
+            tv.setText(this.inputET.getText().toString());
+            this.codeList.addView(tv);
+            this.inputET.setText("");
+        }
     }
 
     public void onRegistersButtonClicked(View v)
@@ -34,14 +55,8 @@ public class MainActivity extends AppCompatActivity
         this.startActivity(i);
     }
 
-    public void onRunButtonClicked(View v)
+    private void executeInstruction(String instruction)
     {
-        //Support 2 instructions: ADD and ADDI
-        //ADD assumes 2 registerValues
-        //ADDI assumes 1 register and one numeric literal
-        String instruction = this.inputET.getText().toString().trim();
-        System.out.println(instruction);
-
         String opCode;
         String rd, rn, rm;
         //ADD X0, X1, X2
@@ -144,7 +159,53 @@ public class MainActivity extends AppCompatActivity
             int valueToStore = CORE.getValueOfRegister(rd);
             CORE.setValueAtMemoryAddress(memAddress, valueToStore);
         }
-        Toast.makeText(this, opCode + " complete", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onRemLastButtonPressed(View v)
+    {
+        if(this.codeList.getChildCount() > 0)
+        {
+            this.codeList.removeViewAt(this.codeList.getChildCount()-1);
+        }
+    }
+
+    public void onClearButtonPressed(View v)
+    {
+        this.codeList.removeAllViews();
+    }
+
+    public void onSaveButtonPressed(View v)
+    {
+        if(CORE.mainActivityMode.equals("NEW"))
+        {
+            //goto new file save screen
+            Intent i = new Intent(this, SaveFileActivity.class);
+            ArrayList<String> theCode = new ArrayList<String>();
+            for(int index = 0; index < this.codeList.getChildCount(); index++)
+            {
+                theCode.add(((TextView)this.codeList.getChildAt(index)).getText().toString().trim());
+            }
+            i.putExtra("theCode", theCode);
+            this.startActivity(i);
+        }
+        else if(CORE.mainActivityMode.equals("UPDATE"))
+        {
+            //save this file using the same name and unique id as before
+        }
+    }
+
+    public void onRunButtonClicked(View v)
+    {
+        //Support 2 instructions: ADD and ADDI
+        //ADD assumes 2 registerValues
+        //ADDI assumes 1 register and one numeric literal
+        TextView temp;
+        for(int i = 0; i < this.codeList.getChildCount(); i++)
+        {
+            temp = (TextView)this.codeList.getChildAt(i);
+            this.executeInstruction(temp.getText().toString().trim());
+        }
+        Toast.makeText(this, "instructions complete", Toast.LENGTH_SHORT).show();
 
     }
 }

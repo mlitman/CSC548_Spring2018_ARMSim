@@ -11,6 +11,9 @@ public class CORE
     static String[] registerNames = {"X0","X1","X2","X3","X4","X5","X6","X7"};
     static String[] registerValues = new String[NUMBER_OF_REGISTERS];
     static String[] ram = new String[NUMBER_OF_BYTES_IN_RAM];
+    static String mainActivityMode = "NEW";
+    static String mainActivityFileName = "";
+    static String mainActivityFileID = "";
 
     static int getValueOfRegister(String registerName)
     {

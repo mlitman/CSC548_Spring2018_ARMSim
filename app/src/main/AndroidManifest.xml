@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".RamActivity"></activity>
+        <activity android:name=".RamActivity" />
+        <activity android:name=".SaveFileActivity"></activity>
     </application>
 
 </manifest>
